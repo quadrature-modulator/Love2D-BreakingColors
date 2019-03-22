@@ -16,17 +16,17 @@
 ]]
 --vars for cool stuff
 local tilemap = require 'tilemap'
-
+local game = require 'game'
 --{type=0, color={}} --this is the structure of a tile object
-
-tilemap.init(3, 3)
+--types include: 0=air, 1=solid tile, 2=current piece tile, etc.
+tilemap.init(12, 6)
 
 function love.load()
     love.window.setMode(320, 240, {resizable=false, highdpi=true})
     love.window.setTitle("breaking colors window")
     love.keyboard.setKeyRepeat(false)
-    tilemap.set(0, 0, {type=1, color={255, 0, 0}})
-    tilemap.set(0, 2, {type=1, color={255, 0, 0}})
+    tilemap.set(0, 0, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
+    tilemap.set(0, 2, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
 end
 
 function love.update()
@@ -36,6 +36,8 @@ function love.update()
 end
 
 function love.draw()
-    love.graphics.print("breaking colors", 0, 120)
-    tilemap.draw(20, 20, 10, 10)
+    love.graphics.setBackgroundColor({255, 255, 255})
+    love.graphics.setColor({0, 0, 0})
+    love.graphics.print("breaking colors hi", 0, 120)
+    tilemap.draw(20, 20, 20, 20)
 end
