@@ -15,6 +15,8 @@
     shift will change almost every button
 ]]
 --vars for cool stuff
+
+--get the files we need
 local tilemap = require 'tilemap'
 local game = require 'game'
 --{type=0, color={}} --this is the structure of a tile object
@@ -25,14 +27,26 @@ function love.load()
     love.window.setMode(320, 240, {resizable=false, highdpi=true})
     love.window.setTitle("breaking colors window")
     love.keyboard.setKeyRepeat(false)
-    tilemap.set(0, 0, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
-    tilemap.set(0, 2, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
+    --tilemap.set(0, 0, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
+    --tilemap.set(0, 2, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
+    game.newPiece()
+
 end
 
-function love.update()
+function love.update(dt)
+    if dt < 1/30 then-------limit fps to 30 (that is all we need)------------------
+        love.timer.sleep(1/30 - dt)
+    end
     if love.keyboard.isDown("escape") then
         love.event.quit() --for the gameshell menu button
     end
+    if game.moveTimer == 0 then
+        game.moveTimer = 60
+        game.movePiece(0, 1)
+    else
+        game.moveTimer = game.moveTimer - 1
+    end
+    
 end
 
 function love.draw()
@@ -40,4 +54,12 @@ function love.draw()
     love.graphics.setColor({0, 0, 0})
     love.graphics.print("breaking colors hi", 0, 120)
     tilemap.draw(20, 20, 20, 20)
+end
+
+function love.keypressed(key)
+    if key == "right" then
+        game.movePiece(1, 0)
+    elseif key == "left" then
+        game.movePiece(-1, 0)
+    end
 end
