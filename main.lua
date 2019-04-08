@@ -61,5 +61,7 @@ function love.keypressed(key)
         game.movePiece(1, 0)
     elseif key == "left" then
         game.movePiece(-1, 0)
+    elseif key == "down" then
+        game.movePiece(0, 1)
     end
 end
