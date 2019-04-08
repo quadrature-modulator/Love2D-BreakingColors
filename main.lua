@@ -21,7 +21,7 @@ local tilemap = require 'tilemap'
 local game = require 'game'
 --{type=0, color={}} --this is the structure of a tile object
 --types include: 0=air, 1=solid tile, 2=current piece tile, etc.
-tilemap.init(12, 6)
+tilemap.init(18, 24)
 
 function love.load()
     love.window.setMode(320, 240, {resizable=false, highdpi=true})
@@ -52,8 +52,8 @@ end
 function love.draw()
     love.graphics.setBackgroundColor({255, 255, 255})
     love.graphics.setColor({0, 0, 0})
-    love.graphics.print("breaking colors hi", 0, 120)
-    tilemap.draw(20, 20, 20, 20)
+    
+    tilemap.draw(20, 0, 10, 10)
 end
 
 function love.keypressed(key)
