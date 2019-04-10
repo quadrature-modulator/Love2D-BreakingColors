@@ -16,7 +16,18 @@ game.moveTimer = 20 --timer that when reaches 0, it moves the piece down and res
 local pw = 2
 local ph = 1
 
-game.newPiece = function() --creates a new piece, should fire after a piece is placed
+game.newPiece = function()
+    game.cpX = 0
+    game.cpY = 0
+    
+    for i=0, pw-1, 1 do
+        for j=0, ph-1, 1 do
+            game.cp[i][j] = {type=2, color=game.colors[love.math.random(1, #game.colors)]}
+        end
+    end
+end
+
+game.initFirstPiece = function()
     for i=0, pw-1, 1 do
         game.cp[i] = {}
         for j=0, ph-1, 1 do
@@ -24,22 +35,29 @@ game.newPiece = function() --creates a new piece, should fire after a piece is p
             tilemap.set(i, j, game.cp[i][j])
         end
     end
+
 end
 
 game.movePiece = function(x, y) --move piece by x and y + check collision
-    for i=0, pw-1, 1 do --should be the x
-        for j=0, ph-1, 1 do --should be the y
+    
+    for i=0, #game.cp, 1 do --should be the x
+        for j=0, #game.cp[i], 1 do --should be the y
             tilemap.set(i + game.cpX, j + game.cpY, {type=0, color={0, 0, 0}}) --blank out current location
         end
     end
     --we check collision here and change vars accordingly
-    cr = moveAndCheckCollision(game.cpX, game.cpY, pw, ph, x, y)
+    cr = moveAndCheckCollision(x, y)
     game.cpX = cr.x
     game.cpY = cr.y
     
-    for i=0, pw-1, 1 do --should be the x
-        for j=0, ph-1, 1 do --should be the y
-            tilemap.set(i + game.cpX, j + game.cpY, game.cp[i][j]) --put the piece at the new location
+    for i=0, #game.cp, 1 do --should be the x
+        for j=0, #game.cp[i], 1 do --should be the y
+            if cr.cp then
+                game.cp[i][j].type = 1
+                tilemap.set(i + game.cpX, j + game.cpY, game.cp[i][j])
+            else
+                tilemap.set(i + game.cpX, j + game.cpY, game.cp[i][j]) --put the piece at the new location (as still current piece)
+            end
         end
     end
     if cr.cp then
@@ -47,26 +65,37 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
     end
 end
 
-game.rotatePiece = function(ccw) --rotates a piece. set 'ccw' to True if rotating counter-clockwise
-
+game.rotatePiece = function(ccw) --rotates a piece. set 'ccw' to True if rotating ccw
+    
+    if ccw then
+        
+    else
+       
+    end
+    
 end
 
-function moveAndCheckCollision(cbx, cby, cbw, cbh, cbmx, cbmy)
+function moveAndCheckCollision(cbmx, cbmy)
     --[[
     returns coords if the piece cant be inside another tile or out of bounds
-    prams:
-    px - the x of collision box movement
-    py - the y of collision box movement
-    pl - length of collision box
-    pw - width of collision box
     ]]
     local canPlace = false
-    --for now just return new pos
-    if cby == 24 - cbh then
+
+
+    
+    if game.cpY == 24 - #game.cp then
         canPlace = true
+        cbmx = 0
+        cbmy = 0
+    end
+    if game.cpX == 0 and cbmx < 0 then
+        cbmx = 0
+    end
+    if game.cpX + pw == tilemap.width and cbmx > 0 then
+        cbmx = 0
     end
 
-    return {x=cbx+cbmx, y=cby+cbmy, cp=canPlace}
+    return {x=game.cpX+cbmx, y=game.cpY+cbmy, cp=canPlace}
 
 end
 

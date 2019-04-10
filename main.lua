@@ -29,7 +29,7 @@ function love.load()
     love.keyboard.setKeyRepeat(false)
     --tilemap.set(0, 0, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
     --tilemap.set(0, 2, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
-    game.newPiece()
+    game.initFirstPiece()
 
 end
 
@@ -64,4 +64,10 @@ function love.keypressed(key)
     elseif key == "down" then
         game.movePiece(0, 1)
     end
+    if key == "k" then
+        game.rotatePiece(true)
+    elseif key == "j" then
+        game.rotatePiece(false)
+    end
+
 end
