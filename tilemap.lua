@@ -22,6 +22,8 @@ tilemap.init = function(w, h)
 end
 
 tilemap.get = function(x, y)
+    if x < 0 then x = 0 end
+    if y < 0 then y = 0 end
     return tilemap.map[x][y]
 end
 
