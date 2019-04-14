@@ -59,27 +59,47 @@ end
 
 game.rotatePiece = function(ccw) --rotates a piece. set 'ccw' to True if rotating ccw
     tilemapSetPiece(true)
+    local origDir = game.cpDir
+    local t2x
+    local t2y
     if ccw then
         if game.cpDir == 0 then
         game.cpDir = 2
+        t2x = 1
+        t2y = 0
         elseif game.cpDir == 1 then
         game.cpDir = 0
+        t2x = 0
+        t2y = -1
         elseif game.cpDir == 2 then
         game.cpDir = 3
+        t2x = 0
+        t2y = 1
         elseif game.cpDir == 3 then
         game.cpDir = 1
+        t2x = -1
+        t2y = 0
         end
     else
         if game.cpDir == 0 then
         game.cpDir = 1
+        t2x = -1
+        t2y = 0
         elseif game.cpDir == 1 then
         game.cpDir = 3
+        t2x = 0
+        t2y = 1
         elseif game.cpDir == 2 then
         game.cpDir = 0
+        t2x = 0
+        t2y = -1
         elseif game.cpDir == 3 then
         game.cpDir = 2
+        t2x = 1
+        t2y = 0
         end
     end
+    if (tilemap.get(game.cpX + t2x, game.cpY + t2y).type ~= 0) or (game.cpX + t2x < 0) or (game.cpX + t2x > tilemap.width - 1) then game.cpDir = origDir end
     game.cp = cpDirTable[game.cpDir]
     tilemapSetPiece(t1, t2)
 end
@@ -116,15 +136,15 @@ function moveAndCheckCollision(cbmx, cbmy)
         t2y = 1
     end
     
-    if game.cpY == tilemap.height - 1 + go then
+    if (game.cpY == tilemap.height - 1 + go) or (tilemap.get(game.cpX, game.cpY + 1).type == 1) or (tilemap.get(game.cpX + t2x, game.cpY + t2y + 1).type == 1) then
         canPlace = true
         cbmx = 0
         cbmy = 0
     end
-    if cbmx < 0 and (game.cpX == 0) or (tilemap.get(game.cpX - 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x - 1, game.cpY + t2y - 1).type == 1) then --left movement
+    if cbmx < 0 and (game.cpX == 0) or (tilemap.get(game.cpX - 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x - 1, game.cpY + t2y).type == 1) then --left movement
         cbmx = 0
     end
-    if cbmx > 0 and (game.cpX == tilemap.width - 1 + wo) or (tilemap.get(game.cpX + 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x + 1, game.cpY + t2y + 1).type == 1) then --right movement
+    if cbmx > 0 and (game.cpX == tilemap.width - 1 + wo) or (tilemap.get(game.cpX + 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x + 1, game.cpY + t2y).type == 1) then --right movement
         cbmx = 0
     end
 
