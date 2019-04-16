@@ -13,7 +13,7 @@ game.colors = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {0, 255, 255}} --table of 
 game.moveTimer = 20 --timer that when reaches 0, it moves the piece down and resets
 game.cpDir = 0 --0=down,1=left,2=right,3=up
 game.gamestate = 0 --0=title,1=options,2=game,3=pause,4=game end
-
+game.score = 0
 --size of the pieces
 local pw = 2
 local ph = 1
@@ -53,6 +53,13 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
     end
     tilemapSetPiece(t1, t2)
     if cr.cp then
+        local x
+        local y
+        for x=0, tilemap.width - 1, 1 do
+            for y=0, tilemap.height-1, 1 do
+                checkAndRemoveMatches(x, y)
+            end
+        end
         game.newPiece()
     end
 end
@@ -141,12 +148,14 @@ function moveAndCheckCollision(cbmx, cbmy)
         cbmx = 0
         cbmy = 0
     end
-    if cbmx < 0 and (game.cpX == 0) or (tilemap.get(game.cpX - 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x - 1, game.cpY + t2y).type == 1) then --left movement
+    if cbmx < 0 and ((game.cpX == 0) or (tilemap.get(game.cpX - 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x - 1, game.cpY + t2y).type == 1)) then --left movement
         cbmx = 0
     end
-    if cbmx > 0 and (game.cpX == tilemap.width - 1 + wo) or (tilemap.get(game.cpX + 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x + 1, game.cpY + t2y).type == 1) then --right movement
+    if cbmx > 0 and ((game.cpX == tilemap.width - 1 + wo) or (tilemap.get(game.cpX + 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x + 1, game.cpY + t2y).type == 1)) then --right movement
         cbmx = 0
     end
+
+    
 
     return {x=game.cpX+cbmx, y=game.cpY+cbmy, cp=canPlace}
 
@@ -171,5 +180,53 @@ function tilemapSetPiece(tp1, tp2)
         tilemap.set(game.cpX, game.cpY+1, tp2)
     end
 end
+
+--------------------------------------------tile check functions----------------------------------------------------------------------------------------------------------
+
+
+function checkAndRemoveMatches(tx, ty)
+    local delX = {}
+    local delY = {}
+    --up
+    local ctx = tx
+    local cty = ty
+    local same = true
+    local sameCounter = 0
+    local tempDelX = {}
+    local tempDelY = {}
+    repeat
+        
+        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
+            table.insert(tempDelX, ctx)
+            table.insert(tempDelY, cty)
+            sameCounter = sameCounter + 1
+            same = true
+            cty = cty - 1
+            game.score = game.score + 1
+        else
+            same = false
+        end
+        
+    until (not same) or cty < 0
+    if sameCounter > 2 then
+        for k,v in pairs(tempDelX) do delX[#delX + k] = v end
+        for k,v in pairs(tempDelY) do delY[#delY + k] = v end
+    end
+
+
+
+
+
+
+
+    clearMatching(delX, delY)--do at end of func
+end
+
+function clearMatching(delX, delY)
+    for i=0, #delX-1, 1 do
+        tilemap.set(delX[i], delY[i], {type=0, color={0, 0, 0}})
+    end
+end
+
 
 return game
