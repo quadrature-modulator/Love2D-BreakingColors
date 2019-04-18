@@ -185,32 +185,106 @@ end
 
 
 function checkAndRemoveMatches(tx, ty)
-    local delX = {}
-    local delY = {}
+    local del = {x={}, y={}}
     --up
     local ctx = tx
     local cty = ty
     local same = true
     local sameCounter = 0
-    local tempDelX = {}
-    local tempDelY = {}
+    local tempDel = {x={}, y={}}
+    
     repeat
         
         if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
-            table.insert(tempDelX, ctx)
-            table.insert(tempDelY, cty)
+            table.insert(tempDel.x, ctx)
+            table.insert(tempDel.y, cty)
             sameCounter = sameCounter + 1
             same = true
             cty = cty - 1
-            game.score = game.score + 1
+            
         else
             same = false
         end
         
     until (not same) or cty < 0
     if sameCounter > 2 then
-        for k,v in pairs(tempDelX) do delX[#delX + k] = v end
-        for k,v in pairs(tempDelY) do delY[#delY + k] = v end
+        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
+        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
+    end
+    --down
+    ctx = tx
+    cty = ty
+    same = true
+    sameCounter = 0
+    tempDel = {x={}, y={}}
+    
+    repeat
+        
+        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
+            table.insert(tempDel.x, ctx)
+            table.insert(tempDel.y, cty)
+            sameCounter = sameCounter + 1
+            same = true
+            cty = cty + 1
+            
+        else
+            same = false
+        end
+        
+    until (not same) or cty > tilemap.height - 1
+    if sameCounter > 2 then
+        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
+        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
+    end
+    --left
+    ctx = tx
+    cty = ty
+    same = true
+    sameCounter = 0
+    tempDel = {x={}, y={}}
+    
+    repeat
+        
+        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
+            table.insert(tempDel.x, ctx)
+            table.insert(tempDel.y, cty)
+            sameCounter = sameCounter + 1
+            same = true
+            ctx = ctx - 1
+            
+        else
+            same = false
+        end
+        
+    until (not same) or ctx < 0
+    if sameCounter > 2 then
+        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
+        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
+    end
+    --right
+    ctx = tx
+    cty = ty
+    same = true
+    sameCounter = 0
+    tempDel = {x={}, y={}}
+    
+    repeat
+        
+        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
+            table.insert(tempDel.x, ctx)
+            table.insert(tempDel.y, cty)
+            sameCounter = sameCounter + 1
+            same = true
+            ctx = ctx + 1
+            
+        else
+            same = false
+        end
+        
+    until (not same) or ctx > tilemap.width - 1
+    if sameCounter > 2 then
+        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
+        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
     end
 
 
@@ -218,13 +292,17 @@ function checkAndRemoveMatches(tx, ty)
 
 
 
-
-    clearMatching(delX, delY)--do at end of func
+    clearMatching(del)--do at end of func
 end
 
-function clearMatching(delX, delY)
-    for i=0, #delX-1, 1 do
-        tilemap.set(delX[i], delY[i], {type=0, color={0, 0, 0}})
+function clearMatching(del)
+    for i, x in pairs(del.x) do
+        for j, y in pairs(del.y) do
+            if tilemap.get(x, y).type ~= 0 then
+                tilemap.set(x, y, {type=0, color={0, 0, 0}})
+                game.score = game.score + 1
+            end
+        end
     end
 end
 

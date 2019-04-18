@@ -52,6 +52,7 @@ end
 function love.draw()
     love.graphics.setBackgroundColor({255, 255, 255})
     love.graphics.setColor({0, 0, 0})
+    
 
     tilemap.draw(20, 0, 10, 10)
 end
