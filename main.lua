@@ -41,7 +41,8 @@ function love.update(dt)
         love.event.quit() --for the gameshell menu button
     end
     if game.moveTimer == 0 then
-        game.moveTimer = 60
+        if love.keyboard.isDown('down') then game.moveTimer = 0 else game.moveTimer = 60 end
+        
         game.movePiece(0, 1)
     else
         game.moveTimer = game.moveTimer - 1
@@ -52,7 +53,7 @@ end
 function love.draw()
     love.graphics.setBackgroundColor({255, 255, 255})
     love.graphics.setColor({0, 0, 0})
-    
+    love.graphics.print("score: "..game.score, 250, 20)
 
     tilemap.draw(20, 0, 10, 10)
 end
@@ -63,7 +64,7 @@ function love.keypressed(key)
     elseif key == "left" then
         game.movePiece(-1, 0)
     elseif key == "down" then
-        game.movePiece(0, 1)
+        game.moveTimer = 0
     end
     if key == "k" then
         game.rotatePiece(true)

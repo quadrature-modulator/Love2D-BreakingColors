@@ -20,6 +20,7 @@ local ph = 1
 local t1
 local t2
 local cpDirTable = {{{}}}
+pop = love.audio.newSource("pop.wav", "stream")
 game.newPiece = function()
     game.cpX = 0
     game.cpY = 0
@@ -55,11 +56,14 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
     if cr.cp then
         local x
         local y
+        local sn = 0
         for x=0, tilemap.width - 1, 1 do
             for y=0, tilemap.height-1, 1 do
-                checkAndRemoveMatches(x, y)
+                sn = sn + checkAndRemoveMatches(x, y)
             end
         end
+        if sn > 0 then love.audio.play(pop) end
+
         game.newPiece()
     end
 end
@@ -293,9 +297,13 @@ function checkAndRemoveMatches(tx, ty)
 
 
     clearMatching(del)--do at end of func
+    if #del.x > 0 then
+        return 1
+    else return 0 end
 end
 
 function clearMatching(del)
+    
     for i, x in pairs(del.x) do
         for j, y in pairs(del.y) do
             if tilemap.get(x, y).type ~= 0 then
