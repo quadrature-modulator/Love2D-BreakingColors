@@ -1,6 +1,6 @@
 Gravity={}
 local tilemap = require 'tilemap'
-funtion loop()
+function loop()
     local ac = 0
    for i =0, tilemap.width-1 do 
 
@@ -18,10 +18,10 @@ funtion loop()
     return ac
 
 end
-Gravity.fall = funtion()
+Gravity.fall = function()
 repeat 
     local AC = loop()
-until AC = 0 
+until AC == 0 
 loop()
 end
 return Gravity
