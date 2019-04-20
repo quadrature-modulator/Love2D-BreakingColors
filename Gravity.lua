@@ -6,6 +6,7 @@ local tilemap = require 'tilemap'
 
 function loop()
     local ac = 0
+
     for i = 0, tilemap.width - 1 do 
         for j = 0, tilemap.height - 2 do
             if tilemap.get(i, j).type == 1 and tilemap.get(i,j+1).type == 0 then
@@ -14,6 +15,7 @@ function loop()
                 tilemap.set(i, j+1, p)
                 ac = ac + 1
             end
+
         end
     end
    
