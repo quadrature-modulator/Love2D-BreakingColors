@@ -6,7 +6,7 @@ if sameCounter > 2 then
     for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
  
 end
-funtion Gravity.fall()
+Gravity.fall = funtion()
      
 end
 return Gravity
