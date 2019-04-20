@@ -1,9 +1,23 @@
 Gravity={}
 local tilemap = require 'tilemap'
 funtion loop()
-if sameCounter > 2 then
-    for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
-    for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
+
+   for i =0, tilemap.width-1 do 
+
+
+    for j=0,tilemap.height-2 do
+        if tilemap.get(i,j-1).type ==0 then
+            repeat 
+                for i =0, tilemap.width-1 do 
+
+
+                    for j=0,tilemap.height-2 do
+                        if tilemap.get(i,j-1).type ==0
+            
+        end
+   end
+    end
+   
  
 end
 Gravity.fall = funtion()
