@@ -124,7 +124,7 @@ function moveAndCheckCollision(cbmx, cbmy)
     local wo
     local t2x --offsets
     local t2y
-    
+    local wo2 = function() if game.cpDir == 1 then return 1 else return 0 end end
     if game.cpDir == 0 then
         go = 0
         wo = 0
@@ -152,7 +152,7 @@ function moveAndCheckCollision(cbmx, cbmy)
         cbmx = 0
         cbmy = 0
     end
-    if cbmx < 0 and ((game.cpX == 0) or (tilemap.get(game.cpX - 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x - 1, game.cpY + t2y).type == 1)) then --left movement
+    if cbmx < 0 and ((game.cpX == 0 + wo2()) or (tilemap.get(game.cpX - 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x - 1, game.cpY + t2y).type == 1)) then --left movement
         cbmx = 0
     end
     if cbmx > 0 and ((game.cpX == tilemap.width - 1 + wo) or (tilemap.get(game.cpX + 1, game.cpY).type == 1) or (tilemap.get(game.cpX + t2x + 1, game.cpY + t2y).type == 1)) then --right movement
@@ -164,6 +164,8 @@ function moveAndCheckCollision(cbmx, cbmy)
     return {x=game.cpX+cbmx, y=game.cpY+cbmy, cp=canPlace}
 
 end
+
+
 
 function tilemapSetPiece(tp1, tp2)
     if tp1 == true then
@@ -215,56 +217,7 @@ function checkAndRemoveMatches(tx, ty)
         for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
         for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
     end
-    --down
-    ctx = tx
-    cty = ty
-    same = true
-    sameCounter = 0
-    tempDel = {x={}, y={}}
-    
-    repeat
-        
-        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
-            table.insert(tempDel.x, ctx)
-            table.insert(tempDel.y, cty)
-            sameCounter = sameCounter + 1
-            same = true
-            cty = cty + 1
-            
-        else
-            same = false
-        end
-        
-    until (not same) or cty > tilemap.height - 1
-    if sameCounter > 2 then
-        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
-        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
-    end
-    --left
-    ctx = tx
-    cty = ty
-    same = true
-    sameCounter = 0
-    tempDel = {x={}, y={}}
-    
-    repeat
-        
-        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
-            table.insert(tempDel.x, ctx)
-            table.insert(tempDel.y, cty)
-            sameCounter = sameCounter + 1
-            same = true
-            ctx = ctx - 1
-            
-        else
-            same = false
-        end
-        
-    until (not same) or ctx < 0
-    if sameCounter > 2 then
-        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
-        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
-    end
+
     --right
     ctx = tx
     cty = ty

@@ -41,7 +41,7 @@ function love.update(dt)
         love.event.quit() --for the gameshell menu button
     end
     if game.moveTimer == 0 then
-        if love.keyboard.isDown('down') then game.moveTimer = 0 else game.moveTimer = 60 end
+        if love.keyboard.isDown('down') then game.moveTimer = 3 else game.moveTimer = 60 end
         
         game.movePiece(0, 1)
     else
