@@ -1,4 +1,6 @@
+
 Gravity = {}
+
 
 local tilemap = require 'tilemap'
 
@@ -24,6 +26,7 @@ Gravity.fall = function()
         local AC = loop()
     until AC == 0 
     loop()
+
 end
 
 return Gravity
