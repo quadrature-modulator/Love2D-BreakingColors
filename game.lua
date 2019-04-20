@@ -35,7 +35,18 @@ game.newPiece = function()
     game.cpDir = 2
     game.cp = cpDirTable[game.cpDir] --set it to right for start
     if #game.cp == 0 then error("oh no") end
-    Gravity.fall()
+end
+
+function game.clearMatches()
+    local x
+    local y
+    local sn = 0
+    for x=0, tilemap.width - 1, 1 do
+        for y=0, tilemap.height-1, 1 do
+            sn = sn + checkAndRemoveMatches(x, y)
+        end
+    end
+    return sn
 end
 
 game.initGame = function()
@@ -56,19 +67,13 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
     end
     tilemapSetPiece(t1, t2)
     if cr.cp then
-        Gravity.fall()
-        local x
-        local y
-        local sn = 0
-        for x=0, tilemap.width - 1, 1 do
-            for y=0, tilemap.height-1, 1 do
-                sn = sn + checkAndRemoveMatches(x, y)
-            end
-        end
-        if sn > 0 then love.audio.play(pop) end
         
+        
+        if game.clearMatches() > 0 then love.audio.play(pop) end
+        Gravity.fall()
         game.newPiece()
     end
+
 end
 
 game.rotatePiece = function(ccw) --rotates a piece. set 'ccw' to True if rotating ccw
