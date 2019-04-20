@@ -6,7 +6,7 @@
 ]]
 game = {}
 local tilemap = require 'tilemap'
---local gravity = require 'Gravity'
+local gravity = require 'Gravity'
 game.cp = {} --this stores the players current piece (a matrix)
 game.cpX = 0
 game.cpY = 0
