@@ -6,7 +6,7 @@
 ]]
 game = {}
 local tilemap = require 'tilemap'
-local gravity = require 'Gravity'
+local Gravity = require 'Gravity'
 game.cp = {} --this stores the players current piece (a matrix)
 game.cpX = 0
 game.cpY = 0
@@ -35,6 +35,7 @@ game.newPiece = function()
     game.cpDir = 2
     game.cp = cpDirTable[game.cpDir] --set it to right for start
     if #game.cp == 0 then error("oh no") end
+    Gravity.fall()
 end
 
 game.initGame = function()
@@ -55,6 +56,7 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
     end
     tilemapSetPiece(t1, t2)
     if cr.cp then
+        Gravity.fall()
         local x
         local y
         local sn = 0
@@ -64,7 +66,7 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
             end
         end
         if sn > 0 then love.audio.play(pop) end
-
+        
         game.newPiece()
     end
 end
