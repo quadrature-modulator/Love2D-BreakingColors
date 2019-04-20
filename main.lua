@@ -22,7 +22,7 @@ local game = require 'game'
 --{type=0, color={}} --this is the structure of a tile object
 --types include: 0=air, 1=solid tile, 2=current piece tile, etc.
 tilemap.init(18, 24)
-
+local horTimer = 0
 function love.load()
     love.window.setMode(320, 240, {resizable=false, highdpi=true})
     love.window.setTitle("breaking colors window")
@@ -47,6 +47,18 @@ function love.update(dt)
     else
         game.moveTimer = game.moveTimer - 1
     end
+
+    if horTimer == 0 then
+        if love.keyboard.isDown('left') then
+            game.movePiece(-1, 0)
+            horTimer = 5
+        elseif love.keyboard.isDown('right') then
+            game.movePiece(1, 0)
+            horTimer = 5
+        end
+    else
+        horTimer = horTimer - 1
+    end
     
 end
 
@@ -59,10 +71,8 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    if key == "right" then
-        game.movePiece(1, 0)
-    elseif key == "left" then
-        game.movePiece(-1, 0)
+    if key == "right" or key == "left" then
+        horTimer = 0
     elseif key == "down" then
         game.moveTimer = 0
     end

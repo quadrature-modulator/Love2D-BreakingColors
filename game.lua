@@ -6,6 +6,7 @@
 ]]
 game = {}
 local tilemap = require 'tilemap'
+--local gravity = require 'Gravity'
 game.cp = {} --this stores the players current piece (a matrix)
 game.cpX = 0
 game.cpY = 0
@@ -22,7 +23,7 @@ local t2
 local cpDirTable = {{{}}}
 pop = love.audio.newSource("pop.wav", "stream")
 game.newPiece = function()
-    game.cpX = 0
+    game.cpX = 8
     game.cpY = 0
     game.cpDir = 2
     t1 = {type=2, color=game.colors[love.math.random(1, #game.colors)]}
@@ -43,7 +44,7 @@ end
 
 game.movePiece = function(x, y) --move piece by x and y + check collision
     tilemapSetPiece(true)
-    
+    if gameOver() then return end
     --we check collision here and change vars accordingly
     cr = moveAndCheckCollision(x, y)
     game.cpX = cr.x
@@ -187,6 +188,22 @@ function tilemapSetPiece(tp1, tp2)
     end
 end
 
+function gameOver()
+    if game.cpY == 0 and tilemap.get(game.cpX, 1).type == 1 then
+        for i=0,tilemap.width - 1 do
+            for j=0,tilemap.height - 1 do
+            
+                tilemap.set(i, j, {type=0, color={0, 0, 0}})
+            
+            end
+        end
+        game.score = 0
+        return true
+
+    else return false end
+end
+
+
 --------------------------------------------tile check functions----------------------------------------------------------------------------------------------------------
 
 
@@ -217,7 +234,31 @@ function checkAndRemoveMatches(tx, ty)
         for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
         for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
     end
-
+    --down
+    ctx = tx
+    cty = ty
+    same = true
+    sameCounter = 0
+    tempDel = {x={}, y={}}
+    
+    repeat
+        
+        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
+            table.insert(tempDel.x, ctx)
+            table.insert(tempDel.y, cty)
+            sameCounter = sameCounter + 1
+            same = true
+            cty = cty + 1
+            
+        else
+            same = false
+        end
+        
+    until (not same) or cty > tilemap.height - 1
+    if sameCounter > 2 then
+        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
+        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
+    end
     --right
     ctx = tx
     cty = ty
@@ -239,6 +280,31 @@ function checkAndRemoveMatches(tx, ty)
         end
         
     until (not same) or ctx > tilemap.width - 1
+    if sameCounter > 2 then
+        for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
+        for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
+    end
+    --right
+    ctx = tx
+    cty = ty
+    same = true
+    sameCounter = 0
+    tempDel = {x={}, y={}}
+    
+    repeat
+        
+        if tilemap.get(ctx, cty).color == tilemap.get(tx, ty).color then
+            table.insert(tempDel.x, ctx)
+            table.insert(tempDel.y, cty)
+            sameCounter = sameCounter + 1
+            same = true
+            ctx = ctx - 1
+            
+        else
+            same = false
+        end
+        
+    until (not same) or ctx < 0
     if sameCounter > 2 then
         for k,v in pairs(tempDel.x) do del.x[#del.x + k] = v end
         for k,v in pairs(tempDel.y) do del.y[#del.y + k] = v end
@@ -266,6 +332,7 @@ function clearMatching(del)
         end
     end
 end
+
 
 
 return game
