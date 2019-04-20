@@ -22,10 +22,20 @@ tilemap.init = function(w, h)
 end
 
 tilemap.get = function(x, y)
+    --failsafe
+    if x < 0 then x = 0 end
+    if y < 0 then y = 0 end
+    if x > tilemap.width - 1 then x = tilemap.width - 1 end
+    if y > tilemap.height - 1 then y = tilemap.height - 1 end
     return tilemap.map[x][y]
 end
 
 tilemap.set = function(x, y, data)
+    --failsafe
+    if x < 0 then x = 0 end
+    if y < 0 then y = 0 end
+    if x > tilemap.width - 1 then x = tilemap.width - 1 end
+    if y > tilemap.height - 1 then y = tilemap.height - 1 end
     tilemap.map[x][y] = data
     
 end

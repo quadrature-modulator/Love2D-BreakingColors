@@ -22,14 +22,14 @@ local game = require 'game'
 --{type=0, color={}} --this is the structure of a tile object
 --types include: 0=air, 1=solid tile, 2=current piece tile, etc.
 tilemap.init(18, 24)
-
+local horTimer = 0
 function love.load()
     love.window.setMode(320, 240, {resizable=false, highdpi=true})
     love.window.setTitle("breaking colors window")
     love.keyboard.setKeyRepeat(false)
     --tilemap.set(0, 0, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
     --tilemap.set(0, 2, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
-    game.newPiece()
+    game.initGame()
 
 end
 
@@ -41,10 +41,23 @@ function love.update(dt)
         love.event.quit() --for the gameshell menu button
     end
     if game.moveTimer == 0 then
-        game.moveTimer = 60
+        if love.keyboard.isDown('down') then game.moveTimer = 3 else game.moveTimer = 60 end
+        
         game.movePiece(0, 1)
     else
         game.moveTimer = game.moveTimer - 1
+    end
+
+    if horTimer == 0 then
+        if love.keyboard.isDown('left') then
+            game.movePiece(-1, 0)
+            horTimer = 5
+        elseif love.keyboard.isDown('right') then
+            game.movePiece(1, 0)
+            horTimer = 5
+        end
+    else
+        horTimer = horTimer - 1
     end
     
 end
@@ -52,14 +65,26 @@ end
 function love.draw()
     love.graphics.setBackgroundColor({255, 255, 255})
     love.graphics.setColor({0, 0, 0})
-    
+    love.graphics.print("score: "..game.score, 250, 20)
+
     tilemap.draw(20, 0, 10, 10)
 end
 
 function love.keypressed(key)
-    if key == "right" then
-        game.movePiece(1, 0)
-    elseif key == "left" then
-        game.movePiece(-1, 0)
+    if key == "right" or key == "left" then
+        horTimer = 0
+    elseif key == "down" then
+        game.moveTimer = 0
     end
+    if key == "k" then
+        game.rotatePiece(true)
+    elseif key == "j" then
+        game.rotatePiece(false)
+    end
+
+end
+
+function drawTitle()
+
+
 end
