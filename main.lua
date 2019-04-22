@@ -41,7 +41,7 @@ function love.update(dt)
         love.event.quit() --for the gameshell menu button
     end
     if game.moveTimer == 0 then
-        if love.keyboard.isDown('down') then game.moveTimer = 3 else game.moveTimer = 60 end
+        if love.keyboard.isDown('down') then game.moveTimer = 3 else game.moveTimer = game.moveTReset end
         
         game.movePiece(0, 1)
     else
@@ -66,7 +66,7 @@ function love.draw()
     love.graphics.setBackgroundColor({255, 255, 255})
     love.graphics.setColor({0, 0, 0})
     love.graphics.print("score: "..game.score, 250, 20)
-
+    love.graphics.print("level: "..game.lvl, 250, 40)
     tilemap.draw(20, 0, 10, 10)
 end
 

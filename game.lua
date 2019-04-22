@@ -11,10 +11,13 @@ game.cp = {} --this stores the players current piece (a matrix)
 game.cpX = 0
 game.cpY = 0
 game.colors = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {0, 255, 255}, {255,211,0}}  --table of piece colors
-game.moveTimer = 20 --timer that when reaches 0, it moves the piece down and resets
+game.moveTimer = 60 --timer that when reaches 0, it moves the piece down and resets
 game.cpDir = 0 --0=down,1=left,2=right,3=up
 game.gamestate = 0 --0=title,1=options,2=game,3=pause,4=game end
 game.score = 0
+game.lvl = 0
+game.moveTReset = 60
+game.levelUpTarget = 5
 --size of the pieces
 local pw = 2
 local ph = 1
@@ -205,6 +208,9 @@ function gameOver()
             end
         end
         game.score = 0
+        game.lvl = 0
+        game.levelUpTarget = 5
+        game.moveTReset = 60
         return true
 
     else return false end
@@ -337,6 +343,15 @@ function clearMatching(del)
                 game.score = game.score + 1
             end
         end
+    end
+    levelUp()
+end
+
+function levelUp()
+    if game.score >= game.levelUpTarget then
+        game.lvl = game.lvl + 1
+        game.levelUpTarget = game.levelUpTarget + 15
+        if game.moveTReset > 0 then game.moveTReset = game.moveTReset - 2 end
     end
 end
 
