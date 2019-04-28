@@ -19,6 +19,7 @@ tilemap.init = function(w, h)
             tilemap.map[i][j] = {type=0, color={255, 255, 255}}
         end
     end
+    tile1 = love.graphics.newImage("gfx/tile.png")
 end
 
 tilemap.get = function(x, y)
@@ -40,18 +41,27 @@ tilemap.set = function(x, y, data)
     
 end
 
-tilemap.draw = function(x, y, tw, th)
+tilemap.draw = function(x, y)
+    local tw = 10
+    local th = 10
+    
     for i=0, #tilemap.map-1, 1 do
         for j=0, #tilemap.map[i]-1, 1 do
             local t = tilemap.map[i][j]
-            love.graphics.setColor({0, 0, 0})
-            love.graphics.rectangle("line", i*tw+x, j*th+y, tw, th)
+            
+            
             love.graphics.setColor(t.color)
             if t.type ~= 0 then
                 love.graphics.rectangle("fill", i*tw+x, j*th+y, tw, th)
+                love.graphics.draw(tile1, i*tw+x, j*th+y)
+            else
+                love.graphics.setColor({0.9, 0.9, 0.9})
+                love.graphics.rectangle("line", i*tw+x, j*th+y, tw, th)
             end
         end
     end
+    love.graphics.setColor({0, 0, 0})
+    love.graphics.rectangle("line", x, y, tw*tilemap.width, th*tilemap.height)
 end
 
 

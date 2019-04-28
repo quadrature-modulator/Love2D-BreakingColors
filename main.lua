@@ -24,19 +24,20 @@ local game = require 'game'
 tilemap.init(18, 24)
 local horTimer = 0
 function love.load()
+    min_dt = 1/30
+   next_time = love.timer.getTime()
     love.window.setMode(320, 240, {resizable=false, highdpi=true})
     love.window.setTitle("breaking colors window")
     love.keyboard.setKeyRepeat(false)
     --tilemap.set(0, 0, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
     --tilemap.set(0, 2, {type=1, color=game.colors[love.math.random(0, #game.colors)]})
     game.initGame()
-
+    local gameFont = love.graphics.newFont("DETERMINATION.TTF", 16)
+    love.graphics.setFont(gameFont)
 end
 
 function love.update(dt)
-    if dt < 1/30 then-------limit fps to 30 (that is all we need)------------------
-        love.timer.sleep(1/30 - dt)
-    end
+    next_time = next_time + min_dt
     if love.keyboard.isDown("escape") then
         love.event.quit() --for the gameshell menu button
     end
@@ -65,9 +66,17 @@ end
 function love.draw()
     love.graphics.setBackgroundColor({255, 255, 255})
     love.graphics.setColor({0, 0, 0})
-    love.graphics.print("score: "..game.score, 250, 20)
-    love.graphics.print("level: "..game.lvl, 250, 40)
+    love.graphics.print("score: "..game.score, 210, 20)
+    love.graphics.print("level: "..game.lvl, 210, 40)
+    love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 210, 60)
     tilemap.draw(20, 0, 10, 10)
+
+    local cur_time = love.timer.getTime()
+   if next_time <= cur_time then
+      next_time = cur_time
+      return
+   end
+   love.timer.sleep(next_time - cur_time)
 end
 
 function love.keypressed(key)

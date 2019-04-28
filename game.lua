@@ -24,7 +24,8 @@ local ph = 1
 local t1
 local t2
 local cpDirTable = {{{}}}
-pop = love.audio.newSource("pop.wav", "stream")
+pop = love.audio.newSource("fx/pop.wav", "stream")
+hit = love.audio.newSource("fx/hit.wav", "stream")
 game.newPiece = function()
     game.cpX = 8
     game.cpY = 0
@@ -68,7 +69,9 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
                 sn = sn + checkAndRemoveMatches(x, y)
             end
         end
-        if sn > 0 then love.audio.play(pop) end
+        if sn > 0 then love.audio.play(pop) else 
+            --love.audio.play(hit) 
+        end
         
         game.newPiece()
     end
