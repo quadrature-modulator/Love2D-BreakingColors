@@ -42,7 +42,7 @@ function love.update(dt)
         love.event.quit() --for the gameshell menu button
     end
     if game.moveTimer == 0 then
-        if love.keyboard.isDown('down') then game.moveTimer = 3 else game.moveTimer = game.moveTReset end
+        if love.keyboard.isDown('down') then game.moveTimer = 2 else game.moveTimer = game.moveTReset end
         
         game.movePiece(0, 1)
     else
@@ -52,10 +52,10 @@ function love.update(dt)
     if horTimer == 0 then
         if love.keyboard.isDown('left') then
             game.movePiece(-1, 0)
-            horTimer = 5
+            horTimer = 3
         elseif love.keyboard.isDown('right') then
             game.movePiece(1, 0)
-            horTimer = 5
+            horTimer = 3
         end
     else
         horTimer = horTimer - 1

@@ -10,13 +10,13 @@ local Gravity = require 'Gravity'
 game.cp = {} --this stores the players current piece (a matrix)
 game.cpX = 0
 game.cpY = 0
-game.colors = {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {0, 255, 255}, {255,211,0}}  --table of piece colors
-game.moveTimer = 60 --timer that when reaches 0, it moves the piece down and resets
+game.colors = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 1, 1}, {1 , 1, 0}}  --table of piece colors
+game.moveTimer = 34 --timer that when reaches 0, it moves the piece down and resets
 game.cpDir = 0 --0=down,1=left,2=right,3=up
 game.gamestate = 0 --0=title,1=options,2=game,3=pause,4=game end
 game.score = 0
 game.lvl = 0
-game.moveTReset = 60
+game.moveTReset = 34
 game.levelUpTarget = 5
 --size of the pieces
 local pw = 2
