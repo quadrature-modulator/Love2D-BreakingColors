@@ -56,7 +56,7 @@ tilemap.draw = function(x, y)
                 love.graphics.draw(tile1, i*tw+x, j*th+y)
             else
                 love.graphics.setColor({0.9, 0.9, 0.9})
-                love.graphics.rectangle("line", i*tw+x, j*th+y, tw, th)
+                love.graphics.rectangle("line", i*tw+x+3, j*th+y+3, tw-5, th-5)
             end
         end
     end
