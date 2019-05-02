@@ -13,6 +13,11 @@
     shift is nul (not avalible for use)
     using shift allows for more options
     shift will change almost every button
+
+    todo:
+        -add controler support
+        -menu
+        -idk
 ]]
 --vars for cool stuff
 
