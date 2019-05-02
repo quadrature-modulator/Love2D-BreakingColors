@@ -10,7 +10,7 @@ local Gravity = require 'Gravity'
 game.cp = {} --this stores the players current piece (a matrix)
 game.cpX = 0
 game.cpY = 0
-game.colors = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 1, 1}, {1 , 1, 0}}  --table of piece colors
+game.colors = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {0, 1, 1}, {1 , 1, 0}, {0.6, 0, 0.6}}  --table of piece colors
 game.moveTimer = 34 --timer that when reaches 0, it moves the piece down and resets
 game.cpDir = 0 --0=down,1=left,2=right,3=up
 game.gamestate = 0 --0=title,1=options,2=game,3=pause,4=game end
@@ -18,6 +18,8 @@ game.score = 0
 game.lvl = 0
 game.moveTReset = 34
 game.levelUpTarget = 5
+game.vibrateT = 0
+game.pfT = 0 --for chain matches
 --size of the pieces
 local pw = 2
 local ph = 1
@@ -60,19 +62,12 @@ game.movePiece = function(x, y) --move piece by x and y + check collision
     end
     tilemapSetPiece(t1, t2)
     if cr.cp then
-        Gravity.fall()
-        local x
-        local y
-        local sn = 0
-        for x=0, tilemap.width - 1, 1 do
-            for y=0, tilemap.height-1, 1 do
-                sn = sn + checkAndRemoveMatches(x, y)
-            end
+        local sn = game.checkAndFall()
+        if sn > 0 then love.audio.play(pop) game.vibrateT = 10 else 
+            love.audio.play(hit)
+            
         end
-        if sn > 0 then love.audio.play(pop) else 
-            --love.audio.play(hit) 
-        end
-        
+        game.pfT = 5
         game.newPiece()
     end
 end
@@ -215,7 +210,7 @@ function gameOver()
 end
 
 
---------------------------------------------tile check functions----------------------------------------------------------------------------------------------------------
+--------------------------------------------tile check functions-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 function checkAndRemoveMatches(tx, ty)
@@ -353,6 +348,18 @@ function levelUp()
     end
 end
 
+function game.checkAndFall()
+    Gravity.fall()
+    local x
+    local y
+    local sn = 0
+    for x=0, tilemap.width - 1, 1 do
+        for y=0, tilemap.height-1, 1 do
+            sn = sn + checkAndRemoveMatches(x, y)
+        end
+    end
+    return sn
 
+end
 
 return game
