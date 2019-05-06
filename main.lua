@@ -15,7 +15,7 @@
     shift will change almost every button
 
     todo:
-        -add controler support
+    
         -menu
         -idk
 ]]
@@ -28,6 +28,7 @@ local game = require 'game'
 --types include: 0=air, 1=solid tile, 2=current piece tile, etc.
 tilemap.init(18, 24)
 local horTimer = 0
+local hasController = false
 function love.load()
     min_dt = 1/30
    next_time = love.timer.getTime()
@@ -41,6 +42,7 @@ function love.load()
     love.graphics.setFont(gameFont)
     local joysticks = love.joystick.getJoysticks()
     gameJoy = joysticks[1]
+    if gameJoy then hasController = true end
     
 
 end
@@ -53,20 +55,29 @@ function love.update(dt)
         love.event.quit() --for the gameshell menu button
     end
     if game.moveTimer == 0 then
-        if love.keyboard.isDown('down') or gameJoy:isGamepadDown("dpdown") then game.moveTimer = 2 else game.moveTimer = game.moveTReset end
-        
+        if love.keyboard.isDown('down') then game.moveTimer = 2 else game.moveTimer = game.moveTReset end
+        if hasController then if gameJoy:isGamepadDown("dpdown") then game.moveTimer = 2 else game.moveTimer = game.moveTReset end end
         game.movePiece(0, 1)
     else
         game.moveTimer = game.moveTimer - 1
     end
 
     if horTimer == 0 then
-        if love.keyboard.isDown('left') or gameJoy:isGamepadDown("dpleft") then
+        if love.keyboard.isDown('left') then
             game.movePiece(-1, 0)
             horTimer = 3
-        elseif love.keyboard.isDown('right') or gameJoy:isGamepadDown("dpright") then
+        elseif love.keyboard.isDown('right') then
             game.movePiece(1, 0)
             horTimer = 3
+        end
+        if hasController then
+            if gameJoy:isGamepadDown("dpleft") then
+                game.movePiece(-1, 0)
+                horTimer = 3
+            elseif gameJoy:isGamepadDown("dpright") then
+                game.movePiece(1, 0)
+                horTimer = 3
+            end
         end
     else
         horTimer = horTimer - 1
@@ -74,9 +85,9 @@ function love.update(dt)
 
     if game.vibrateT > 0 then
         game.vibrateT = game.vibrateT - 1
-        if gameJoy:isVibrationSupported() then gameJoy:setVibration(1, 1) end
+        if hasController then gameJoy:setVibration(1, 1) end
     else
-        gameJoy:setVibration(0, 0)
+        if hasController then gameJoy:setVibration(0, 0) end
     end
 
     if game.pfT > 0 then
@@ -92,7 +103,6 @@ function love.draw()
     love.graphics.print("score: "..game.score, 210, 20)
     love.graphics.print("level: "..game.lvl, 210, 40)
     love.graphics.print("FPS: "..tostring(love.timer.getFPS( )), 210, 60)
-    love.graphics.print("cv: "..tostring(gameJoy:isVibrationSupported()), 210, 80)
     tilemap.draw(20, 0, 10, 10)
 
     local cur_time = love.timer.getTime()
